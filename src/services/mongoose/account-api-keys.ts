@@ -77,7 +77,7 @@ export const AccountApiKeysRepository = (): IAccountApiKeysRepository => {
     try {
       const data = { enabled: false }
       const doc = await AccountApiKey.updateOne({ accountId, label }, { $set: data })
-      if (doc.nModified !== 1) {
+      if (doc.modifiedCount !== 1) {
         return new RepositoryError("Couldn't disable api key")
       }
     } catch (err) {

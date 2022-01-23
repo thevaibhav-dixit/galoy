@@ -123,6 +123,7 @@
     "@types/lodash.sortby": "^4.7.6",
     "@types/lodash.sumby": "^4.6.6",
     "@types/migrate-mongo": "^8.1.2",
+    "@types/mongodb": "^4.0.7",
     "@types/mongoose": "~5.11.97",
     "@types/newman": "^5.1.4",
     "@types/node": "^16.0.0",

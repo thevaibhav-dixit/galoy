@@ -213,9 +213,7 @@ export const LedgerService = (): ILedgerService => {
           },
         },
         { $group: { _id: "$accounts" } },
-      ])
-        .cursor({ batchSize: 100 })
-        .exec()
+      ]).cursor({ batchSize: 100 })
     } catch (error) {
       return new UnknownLedgerError(error)
     }

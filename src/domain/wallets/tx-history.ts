@@ -119,7 +119,7 @@ export const fromLedger = (
             settlementVia: {
               type: SettlementMethod.IntraLedger,
               counterPartyWalletId: recipientWalletId as WalletId,
-              counterPartyUsername: username || null,
+              counterPartyUsername: username,
             },
           }
           return walletTransaction
@@ -150,7 +150,7 @@ export const fromLedger = (
             settlementVia: {
               type: SettlementMethod.IntraLedger,
               counterPartyWalletId: recipientWalletId as WalletId,
-              counterPartyUsername: username || null,
+              counterPartyUsername: username,
             },
           }
           return walletTransaction
@@ -182,7 +182,7 @@ export const fromLedger = (
         settlementVia: {
           type: SettlementMethod.IntraLedger,
           counterPartyWalletId: recipientWalletId as WalletId,
-          counterPartyUsername: username || null,
+          counterPartyUsername: username,
         },
       }
       return walletTransaction

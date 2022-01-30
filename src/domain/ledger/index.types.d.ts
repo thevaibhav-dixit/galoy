@@ -19,8 +19,13 @@ type LedgerJournal = {
   readonly transactionIds: LedgerTransactionId[]
 }
 
+type PartialLedgerTransactionFromMetadata = {
+  // for ln
+  readonly revealedPreImage?: RevealedPreImage
+}
+
 // Differentiate fields depending on what 'type' we have (see domain/wallets/index.types.d.ts)
-type LedgerTransaction = {
+type LedgerTransaction = PartialLedgerTransactionFromMetadata & {
   readonly id: LedgerTransactionId
   readonly walletId: WalletId | undefined // FIXME create a subclass so that this field is always set for liabilities wallets
   readonly type: LedgerTransactionType

@@ -66,7 +66,7 @@ export const LedgerService = (): ILedgerService => {
   ): Promise<LedgerTransaction[] | LedgerServiceError> => {
     try {
       const { results } = await MainBook.ledger({
-        account_path: [liabilitiesMainAccount],
+        account_path: liabilitiesMainAccount,
         hash,
       })
       return results.map((tx) => translateToLedgerTx(tx))

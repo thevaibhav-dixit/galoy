@@ -432,20 +432,12 @@ describe("UserWallet - Lightning Pay", () => {
     if (paymentResult instanceof Error) throw paymentResult
     expect(paymentResult).toBe(PaymentSendStatus.Success)
 
-    // Test metadata is correctly persisted
+    // Test metadata is added back to ledger transactions correctly
     const txns = await LedgerService().getTransactionsByHash(paymentHash)
     if (txns instanceof Error) throw txns
-    const txns_metadata = await Promise.all(
-      txns.map(async (txn) => TransactionsMetadataRepository().findById(txn.id)),
-    )
-    expect(txns_metadata).toHaveLength(txns.length)
-
-    const metadataCheck = txns_metadata.every((txn) => !(txn instanceof Error))
-    expect(metadataCheck).toBeTruthy()
-    if (!metadataCheck) throw txns_metadata.find((txn) => txn instanceof Error)
 
     const revealedPreImages = new Set(
-      txns_metadata.map((txn) =>
+      txns.map((txn) =>
         txn instanceof Error
           ? txn
           : "revealedPreImage" in txn
@@ -455,6 +447,28 @@ describe("UserWallet - Lightning Pay", () => {
     )
     expect(revealedPreImages.size).toEqual(1)
     expect(revealedPreImages.has(revealedPreImage)).toBeTruthy()
+
+    // Test metadata is correctly persisted
+    const txns_metadata = await Promise.all(
+      txns.map(async (txn) => TransactionsMetadataRepository().findById(txn.id)),
+    )
+    expect(txns_metadata).toHaveLength(txns.length)
+
+    const metadataCheck = txns_metadata.every((txn) => !(txn instanceof Error))
+    expect(metadataCheck).toBeTruthy()
+    if (!metadataCheck) throw txns_metadata.find((txn) => txn instanceof Error)
+
+    const revealedPreImagesInMetadata = new Set(
+      txns_metadata.map((txn) =>
+        txn instanceof Error
+          ? txn
+          : "revealedPreImage" in txn
+          ? txn.revealedPreImage
+          : undefined,
+      ),
+    )
+    expect(revealedPreImagesInMetadata.size).toEqual(1)
+    expect(revealedPreImagesInMetadata.has(revealedPreImage)).toBeTruthy()
 
     const paymentHashes = new Set(
       txns_metadata.map((txn) =>

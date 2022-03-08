@@ -34,6 +34,7 @@ describe("WalletTransactionHistory.fromLedger", () => {
         journalId: "journalId" as LedgerJournalId,
         timestamp,
         feeKnownInAdvance: false,
+        revealedPreImage: "revealedPreImage" as RevealedPreImage,
       },
       {
         id: "id" as LedgerTransactionId,
@@ -104,7 +105,7 @@ describe("WalletTransactionHistory.fromLedger", () => {
         memo: "SomeMemo",
         settlementVia: {
           type: SettlementMethod.Lightning,
-          revealedPreImage: null,
+          revealedPreImage: "revealedPreImage",
         },
         settlementAmount,
         settlementFee: toSats(0),
@@ -143,7 +144,7 @@ describe("WalletTransactionHistory.fromLedger", () => {
         settlementVia: {
           type: SettlementMethod.IntraLedger,
           counterPartyWalletId: "walletIdRecipient" as WalletId,
-          counterPartyUsername: null,
+          counterPartyUsername: undefined,
         },
         memo: null,
         settlementAmount,

@@ -201,6 +201,14 @@ interface ILightningService {
     args: ListLnPaymentsArgs,
   ): Promise<ListLnPaymentsResult | LightningServiceError>
 
+  deletePaymentByHash({
+    paymentHash,
+    pubkey,
+  }: {
+    paymentHash: PaymentHash
+    pubkey?: Pubkey
+  }): Promise<true | LightningServiceError>
+
   cancelInvoice({
     pubkey,
     paymentHash,

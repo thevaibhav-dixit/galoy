@@ -2,6 +2,7 @@ import { JTDDataType } from "ajv/dist/types/jtd-schema"
 
 export type ConfigSchema = JTDDataType<typeof configSchema>
 export type DisplayCurrencyConfigSchema = JTDDataType<typeof displayCurrencyConfigSchema>
+export type DealerConfigSchema = JTDDataType<typeof dealerConfigSchema>
 
 export type RewardsConfigSchema = {
   denyPhoneCountries: string[]
@@ -16,6 +17,20 @@ const displayCurrencyConfigSchema = {
   },
   required: ["code", "symbol"],
   additionalProperties: false,
+} as const
+
+const dealerConfigSchema = {
+  type: "object",
+  properties: {
+    usd: {
+      type: "object",
+      properties: {
+        hedgingEnabled: { type: "boolean", default: false },
+      },
+      required: ["hedgingEnabled"],
+    },
+  },
+  required: ["usd"],
 } as const
 
 const buildNumberConfigSchema = {
@@ -97,6 +112,7 @@ export const configSchema = {
     locale: { type: "string", enum: ["en", "es"], default: "en" },
     displayCurrency: displayCurrencyConfigSchema,
     funder: { type: "string" },
+    dealer: dealerConfigSchema,
     buildVersion: {
       type: "object",
       properties: {

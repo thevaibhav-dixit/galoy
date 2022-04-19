@@ -1,6 +1,6 @@
 import { Wallets } from "@app"
 import { addWallet } from "@app/accounts/add-wallet"
-import { getCurrentPriceInCentsPerSat } from "@app/payments/helpers"
+import { getCurrentPriceInCentsPerSat } from "@app/shared"
 import {
   getInvoiceCreateAttemptLimits,
   getInvoiceCreateForRecipientAttemptLimits,
@@ -70,7 +70,9 @@ describe("Wallet - addInvoice BTC", () => {
     expect(request.startsWith("lnbcrt10")).toBeTruthy()
     const result = await walletInvoices.findByPaymentHash(getHash(request))
     if (result instanceof Error) throw result
-    const { walletId, currency } = result
+    const {
+      receiverWalletDescriptor: { id: walletId, currency },
+    } = result
     expect(walletId).toBe(walletIdBtc)
     expect(currency).toBe(WalletCurrency.Btc)
 
@@ -90,7 +92,9 @@ describe("Wallet - addInvoice BTC", () => {
 
     const result = await walletInvoices.findByPaymentHash(getHash(request))
     if (result instanceof Error) throw result
-    const { walletId, currency } = result
+    const {
+      receiverWalletDescriptor: { id: walletId, currency },
+    } = result
     expect(walletId).toBe(walletIdBtc)
     expect(currency).toBe(WalletCurrency.Btc)
   })
@@ -108,7 +112,10 @@ describe("Wallet - addInvoice BTC", () => {
 
     const result = await walletInvoices.findByPaymentHash(getHash(request))
     if (result instanceof Error) throw result
-    const { walletId, selfGenerated } = result
+    const {
+      selfGenerated,
+      receiverWalletDescriptor: { id: walletId },
+    } = result
     expect(String(walletId)).toBe(String(walletIdBtc))
     expect(selfGenerated).toBe(false)
 
@@ -129,7 +136,10 @@ describe("Wallet - addInvoice BTC", () => {
 
     const result = await walletInvoices.findByPaymentHash(getHash(request))
     if (result instanceof Error) throw result
-    const { walletId, selfGenerated } = result
+    const {
+      selfGenerated,
+      receiverWalletDescriptor: { id: walletId },
+    } = result
     expect(String(walletId)).toBe(String(walletIdBtc))
     expect(selfGenerated).toBe(false)
   })
@@ -161,9 +171,15 @@ describe("Wallet - addInvoice USD", () => {
     expect(request.startsWith("lnbcrt")).toBeTruthy()
     const result = await walletInvoices.findByPaymentHash(getHash(request))
     if (result instanceof Error) throw result
-    const { walletId, cents, currency } = result
+    const {
+      usdAmount,
+      receiverWalletDescriptor: { id: walletId, currency },
+    } = result
     expect(String(walletId)).toBe(String(walletIdUsd))
-    expect(cents).toBe(centsInput)
+    expect(usdAmount).toEqual({
+      currency: WalletCurrency.Usd,
+      amount: BigInt(centsInput),
+    })
     expect(currency).toBe(WalletCurrency.Usd)
 
     const decodedInvoice = decodeInvoice(request)
@@ -182,9 +198,12 @@ describe("Wallet - addInvoice USD", () => {
 
     const result = await walletInvoices.findByPaymentHash(getHash(request))
     if (result instanceof Error) throw result
-    const { walletId, cents } = result
+    const {
+      usdAmount,
+      receiverWalletDescriptor: { id: walletId },
+    } = result
     expect(String(walletId)).toBe(String(walletIdUsd))
-    expect(cents).toBe(undefined)
+    expect(usdAmount).toBe(undefined)
   })
 
   it("adds a public with amount invoice", async () => {
@@ -207,8 +226,15 @@ describe("Wallet - addInvoice USD", () => {
 
     const result = await walletInvoices.findByPaymentHash(getHash(request))
     if (result instanceof Error) throw result
-    const { walletId, selfGenerated, cents } = result
-    expect(cents).toBe(centsInput)
+    const {
+      usdAmount,
+      selfGenerated,
+      receiverWalletDescriptor: { id: walletId },
+    } = result
+    expect(usdAmount).toEqual({
+      currency: WalletCurrency.Usd,
+      amount: BigInt(centsInput),
+    })
 
     expect(String(walletId)).toBe(String(walletIdUsd))
     expect(selfGenerated).toBe(false)
@@ -230,10 +256,14 @@ describe("Wallet - addInvoice USD", () => {
 
     const result = await walletInvoices.findByPaymentHash(getHash(request))
     if (result instanceof Error) throw result
-    const { walletId, selfGenerated, cents } = result
+    const {
+      usdAmount,
+      selfGenerated,
+      receiverWalletDescriptor: { id: walletId },
+    } = result
     expect(String(walletId)).toBe(String(walletIdUsd))
     expect(selfGenerated).toBe(false)
-    expect(cents).toBe(undefined)
+    expect(usdAmount).toBe(undefined)
   })
 })
 

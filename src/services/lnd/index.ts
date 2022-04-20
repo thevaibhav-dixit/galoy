@@ -66,24 +66,6 @@ export const LndService = (
     getLnds({ type: "offchain" }).map((lndAuth) => lndAuth.pubkey as Pubkey)
 
   const findRouteForInvoice = async ({
-    decodedInvoice,
-    maxFee,
-  }: {
-    decodedInvoice: LnInvoice
-    maxFee: Satoshis
-  }): Promise<RawRoute | LightningServiceError> => {
-    if (!(decodedInvoice.amount && decodedInvoice.amount > 0))
-      return new LightningServiceError(
-        "No amount invoice passed to method. Expected a valid amount to be present.",
-      )
-    return probeForRoute({
-      decodedInvoice,
-      maxFee,
-      amount: decodedInvoice.amount,
-    })
-  }
-
-  const findRouteForInvoiceNew = async ({
     invoice,
     amount,
   }: {
@@ -547,7 +529,6 @@ export const LndService = (
       listActivePubkeys,
       listAllPubkeys,
       findRouteForInvoice,
-      findRouteForInvoiceNew,
       findRouteForNoAmountInvoice,
       registerInvoice,
       lookupInvoice,

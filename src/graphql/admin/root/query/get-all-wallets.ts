@@ -1,14 +1,21 @@
 import { GT } from "@graphql/index"
-import BtcWallet from "@graphql/types/object/btc-wallet"
 import { getAllWallets } from "@app/wallets/get-all-wallets"
-const getAllBtcWalletsQuery = GT.Field({
-  type: GT.NonNullList(BtcWallet),
-  resolve: async () => {
-    const btcWallets = await getAllWallets()
+import WalletCurrency from "@graphql/types/scalar/wallet-currency"
+import IWallet from "@graphql/types/abstract/wallet"
+
+const walletsQuery = GT.Field({
+  type: GT.NonNullList(IWallet),
+  args: {
+    walletCurrency: { type: GT.NonNull(WalletCurrency) },
+  },
+  resolve: async (_, { walletCurrency }) => {
+    if (walletCurrency instanceof Error) throw walletCurrency
+    const btcWallets = await getAllWallets(walletCurrency)
     if (btcWallets instanceof Error) {
       throw btcWallets
     }
     return btcWallets
   },
 })
-export default getAllBtcWalletsQuery
+
+export default walletsQuery

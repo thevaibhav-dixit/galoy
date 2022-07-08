@@ -1,6 +1,6 @@
 import { WalletsRepository } from "@services/mongoose"
 
-export const getAllWallets = async () => {
-  const wallets = await WalletsRepository().listAll("BTC")
+export const getAllWallets = async (walletCurrency: WalletCurrency) => {
+  const wallets = await WalletsRepository().listAll(walletCurrency)
   return wallets
 }
